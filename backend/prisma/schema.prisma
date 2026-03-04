@@ -55,6 +55,7 @@ model UserProfile {
   name                String
   sex                 String    // enum: male | female | other
   birthDate           DateTime  @map("birth_date") @db.Date
+  weightKg            Float?    @map("weight_kg")
   heightCm            Float     @map("height_cm")
   bodyFatPercentage   Float?    @map("body_fat_percentage")
   bodyFatVisualId     String?   @map("body_fat_visual_id")
