@@ -192,6 +192,34 @@ Este documento define **exatamente** o que o frontend deve **enviar** (request b
 
 ---
 
+## 4.1. PUT /api/v1/onboarding/training-preferences (DD-ENT-TRAININGPREFERENCE)
+
+**Autenticação:** obrigatório header `Authorization: Bearer <access_token>`.
+
+**O que o frontend envia (body):**
+
+```json
+{
+  "machines_only": true
+}
+```
+
+| Campo        | Tipo    | Obrigatório | Descrição |
+|--------------|---------|-------------|-----------|
+| machines_only | boolean | sim         | Quando `true`, o motor de treino prioriza exercícios em máquinas (exclui peso livre). Usado no plano semanal (`summary.machines_only`). |
+
+**O que o frontend recebe:**
+
+| Status | Body |
+|--------|------|
+| **200** | Corpo vazio. Preferência criada ou atualizada (um registro por usuário). |
+| **400** | `{ "statusCode": 400, "message": [...], "error": "Bad Request" }` — ex.: `machines_only` não é boolean. |
+| **401** | `{ "statusCode": 401, "message": "Unauthorized", "error": "Unauthorized" }` |
+
+**Nota:** A preferência é opcional. Se o usuário não tiver registro, o POST /plans/weekly usa `machines_only: true` por padrão.
+
+---
+
 ## 5. POST /api/v1/plans/weekly
 
 **Autenticação:** obrigatório header `Authorization: Bearer <access_token>`.

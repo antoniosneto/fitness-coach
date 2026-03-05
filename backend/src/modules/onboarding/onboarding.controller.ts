@@ -3,6 +3,7 @@ import { CurrentUser, JwtUser } from '../auth/decorators/current-user.decorator'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateGoalsDto } from './dto/update-goals.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UpdateTrainingPreferencesDto } from './dto/update-training-preferences.dto';
 import { OnboardingService } from './onboarding.service';
 
 @Controller('onboarding')
@@ -28,6 +29,18 @@ export class OnboardingController {
     @Body() dto: UpdateGoalsDto,
   ): Promise<void> {
     await this.onboardingService.defineGoals(
+      user.userId,
+      user.tenantId,
+      dto,
+    );
+  }
+
+  @Put('training-preferences')
+  async updateTrainingPreferences(
+    @CurrentUser() user: JwtUser,
+    @Body() dto: UpdateTrainingPreferencesDto,
+  ): Promise<void> {
+    await this.onboardingService.upsertTrainingPreferences(
       user.userId,
       user.tenantId,
       dto,

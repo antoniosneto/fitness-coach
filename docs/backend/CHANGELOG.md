@@ -4,6 +4,14 @@ Registro de atualizações feitas pelo **Agente Documentador** (`agents/document
 
 ---
 
+## 2026-03-05 – Preferências de treino (DD-ENT-TRAININGPREFERENCE)
+
+- **Motivo:** PUT /api/v1/onboarding/training-preferences com `machines_only`; modelo TrainingPreference (1:1 User); PlanService lê preferência e usa no plano semanal (`summary.machines_only`). Refinamento Passo 4 (preferências de treino/esportes).
+- **Arquivos alterados:** backend: prisma (TrainingPreference), OnboardingModule (DTO, service, controller), PlanService; docs: contratos-frontend, api-endpoints, CHANGELOG; Postman.
+- **Requisitos/cenários:** DD-ENT-TRAININGPREFERENCE, SCN-TRAIN-ROTINA-MAQUINAS (uso da preferência no motor).
+
+---
+
 ## 2026-03-05 – Recuperação de senha (REQ-AUTH-003)
 
 - **Motivo:** Fluxo "Esqueci minha senha": POST /api/v1/auth/forgot-password e POST /api/v1/auth/reset-password. Token temporário (1 h), tabela PasswordResetToken, abstração de e-mail (ADR-002, stub em console), rate limit par IP+email (429). Contrato em CONTRATO-AUTH-RECUPERACAO-SENHA.md.

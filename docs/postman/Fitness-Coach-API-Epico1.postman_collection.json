@@ -162,6 +162,33 @@
           }
         },
         {
+          "name": "PUT Training Preferences",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"machines_only\": true\n}"
+            },
+            "url": "{{base_url}}/api/v1/onboarding/training-preferences",
+            "description": "DD-ENT-TRAININGPREFERENCE. Define preferência de treino (apenas máquinas). Usado pelo POST /plans/weekly em summary.machines_only."
+          }
+        },
+        {
           "name": "PUT Goals (expect 422)",
           "event": [
             {

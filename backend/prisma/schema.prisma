@@ -42,6 +42,7 @@ model User {
   weeklyPlans WeeklyPlan[]
   authSessions AuthSession[]
   passwordResetTokens PasswordResetToken[]
+  trainingPreference TrainingPreference?
 
   @@unique([tenantId, email])
   @@map("users")
@@ -155,4 +156,19 @@ model PasswordResetToken {
 
   user User @relation(fields: [userId], references: [userId], onDelete: Restrict)
   @@map("password_reset_tokens")
+}
+
+// ---------------------------------------------------------------------------
+// TRAINING_PREFERENCE – Preferências de treino (DD-ENT-TRAININGPREFERENCE); 1:1 User
+// ---------------------------------------------------------------------------
+model TrainingPreference {
+  trainingPreferenceId String   @id @default(uuid()) @map("training_preference_id")
+  userId               String   @unique @map("user_id")
+  tenantId             String   @map("tenant_id")
+  machinesOnly         Boolean  @default(true) @map("machines_only")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [userId], onDelete: Restrict)
+  @@map("training_preferences")
 }

@@ -71,7 +71,10 @@ export class PlanService {
     );
 
     const { startDate, endDate } = this.getCurrentWeekBounds();
-    const machinesOnly = true; // SCN-TRAIN-ROTINA-MAQUINAS; preferência virá de TrainingPreference quando existir
+    const preference = await prisma.trainingPreference.findUnique({
+      where: { userId },
+    });
+    const machinesOnly = preference?.machinesOnly ?? true;
     const weeklyTraining = this.goalsMotor.buildWeeklyTrainingSchedule(machinesOnly);
     const summary: WeeklyPlanResponseDto['summary'] = {
       daily_targets: {

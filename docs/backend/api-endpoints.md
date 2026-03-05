@@ -143,6 +143,15 @@ Define meta de composição corporal (BodyCompositionGoal). Valida taxa de perda
 
 ---
 
+### PUT /api/v1/onboarding/training-preferences (DD-ENT-TRAININGPREFERENCE)
+
+Cria ou atualiza preferências de treino do usuário (um registro por usuário). Usado pelo motor de metas em POST /plans/weekly para definir `summary.machines_only`.
+
+**Request body:** `{ "machines_only": true }` ou `{ "machines_only": false }` (boolean obrigatório).  
+**Response 200:** corpo vazio. **Response 400/401:** ver [contratos-frontend.md](contratos-frontend.md).
+
+---
+
 ## Plans
 
 Rotas protegidas: enviar `Authorization: Bearer <access_token>`.
@@ -167,6 +176,6 @@ Gera o plano semanal (Motor de Metas: GCT Mifflin-St Jeor, déficit por intensid
 
 ## Endpoints planejados (Épico 1, ainda não implementados)
 
-- Preferências de treino/esporte (se definido no contrato).
+- Preferências de esportes (DD-ENT-SPORTPREFERENCE), se definido no contrato.
 
 Contratos detalhados: PRD e refinamento técnico.

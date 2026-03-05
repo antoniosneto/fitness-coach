@@ -6,6 +6,7 @@ import {
 import { PrismaService } from '../../prisma/prisma.service';
 import type { UpdateGoalsDto } from './dto/update-goals.dto';
 import type { UpdateProfileDto } from './dto/update-profile.dto';
+import type { UpdateTrainingPreferencesDto } from './dto/update-training-preferences.dto';
 
 /** REQ-GOAL-001: taxa de perda semanal ≤ 1,5% do peso corporal */
 const MAX_WEEKLY_LOSS_PERCENT = 1.5;
@@ -97,6 +98,26 @@ export class OnboardingService {
     }
 
     await this.createGoal(userId, dto);
+  }
+
+  /**
+   * DD-ENT-TRAININGPREFERENCE: preferências de treino (ex.: apenas máquinas).
+   * Upsert: cria ou atualiza o registro único por usuário.
+   */
+  async upsertTrainingPreferences(
+    userId: string,
+    tenantId: string,
+    dto: UpdateTrainingPreferencesDto,
+  ): Promise<void> {
+    await this.prisma.trainingPreference.upsert({
+      where: { userId },
+      create: {
+        userId,
+        tenantId,
+        machinesOnly: dto.machines_only,
+      },
+      update: { machinesOnly: dto.machines_only },
+    });
   }
 
   private async createGoal(
