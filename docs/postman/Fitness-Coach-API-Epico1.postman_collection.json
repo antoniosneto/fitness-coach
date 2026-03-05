@@ -72,6 +72,57 @@
             "url": "{{base_url}}/api/v1/auth/login",
             "description": "Retorna JWT. O token é salvo automaticamente em access_token para as rotas de onboarding."
           }
+        },
+        {
+          "name": "POST Forgot Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 - forgot password', function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"teste@email.com\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/auth/forgot-password",
+            "description": "REQ-AUTH-003. Sempre 200. Se o e-mail existir, envia link por e-mail (em dev: stub loga no console). Rate limit 429. Para testar reset: obter token do último registro em password_reset_tokens (SELECT token FROM password_reset_tokens ORDER BY created_at DESC LIMIT 1)."
+          }
+        },
+        {
+          "name": "POST Reset Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 ou 400', function () {",
+                  "    const code = pm.response.code;",
+                  "    pm.expect([200, 400]).to.include(code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"COLE_O_TOKEN_DO_EMAIL_OU_DO_BANCO\",\n  \"new_password\": \"novasenha123\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/auth/reset-password",
+            "description": "REQ-AUTH-003. Token = valor recebido no link de e-mail (ou do banco após POST Forgot Password). new_password mínimo 8 caracteres. 200: sucesso; 400: token inválido/expirado."
+          }
         }
       ]
     },

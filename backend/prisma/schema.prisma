@@ -41,6 +41,7 @@ model User {
   goals    BodyCompositionGoal[]
   weeklyPlans WeeklyPlan[]
   authSessions AuthSession[]
+  passwordResetTokens PasswordResetToken[]
 
   @@unique([tenantId, email])
   @@map("users")
@@ -138,4 +139,20 @@ model AuthSession {
 
   user User @relation(fields: [userId], references: [userId], onDelete: Restrict)
   @@map("auth_sessions")
+}
+
+// ---------------------------------------------------------------------------
+// PASSWORD_RESET_TOKEN – Token temporário para recuperação de senha (REQ-AUTH-003)
+// ---------------------------------------------------------------------------
+model PasswordResetToken {
+  tokenId   String    @id @default(uuid()) @map("token_id")
+  userId    String    @map("user_id")
+  tenantId  String    @map("tenant_id")
+  token     String    @unique
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [userId], onDelete: Restrict)
+  @@map("password_reset_tokens")
 }

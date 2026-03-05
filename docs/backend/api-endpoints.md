@@ -62,6 +62,24 @@ O JWT contém (claims): `sub` (user_id), `tenant_id`, `roles`, `exp` (expiraçã
 
 ---
 
+### POST /api/v1/auth/forgot-password (REQ-AUTH-003)
+
+Fluxo "Esqueci minha senha". Sempre retorna 200; se o e-mail existir no tenant, gera token, persiste e envia e-mail com link. Rate limit: par IP+email (429 após limite).
+
+**Request body:** `{ "email": "usuario@email.com" }`  
+**Response 200:** corpo vazio. **Response 400/429:** ver [contratos-frontend.md](contratos-frontend.md).
+
+---
+
+### POST /api/v1/auth/reset-password (REQ-AUTH-003)
+
+Redefine a senha usando o token recebido por e-mail.
+
+**Request body:** `{ "token": "<token_do_link>", "new_password": "novasenha123" }` (new_password mínimo 8 caracteres).  
+**Response 200:** corpo vazio. **Response 400:** token inválido/expirado ou senha inválida. Detalhes em [contratos-frontend.md](contratos-frontend.md).
+
+---
+
 ## Onboarding
 
 Rotas protegidas: enviar `Authorization: Bearer <access_token>` (JWT obtido em `/auth/login`).
@@ -149,7 +167,6 @@ Gera o plano semanal (Motor de Metas: GCT Mifflin-St Jeor, déficit por intensid
 
 ## Endpoints planejados (Épico 1, ainda não implementados)
 
-- Recuperação de senha (REQ-AUTH-003).
 - Preferências de treino/esporte (se definido no contrato).
 
 Contratos detalhados: PRD e refinamento técnico.

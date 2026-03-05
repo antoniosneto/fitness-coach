@@ -4,6 +4,14 @@ Registro de atualizações feitas pelo **Agente Documentador** (`agents/document
 
 ---
 
+## 2026-03-05 – Recuperação de senha (REQ-AUTH-003)
+
+- **Motivo:** Fluxo "Esqueci minha senha": POST /api/v1/auth/forgot-password e POST /api/v1/auth/reset-password. Token temporário (1 h), tabela PasswordResetToken, abstração de e-mail (ADR-002, stub em console), rate limit par IP+email (429). Contrato em CONTRATO-AUTH-RECUPERACAO-SENHA.md.
+- **Arquivos alterados:** backend: AuthModule, AuthService, AuthController, DTOs, ports/mail-sender.interface, adapters/console-mail-sender.service; prisma: modelo PasswordResetToken; docs: contratos-frontend.md, api-endpoints.md, CHANGELOG.md; adr/ADR-002.
+- **Requisitos/cenários:** REQ-AUTH-003.
+
+---
+
 ## 2026-03-05 – Estrutura de treino semanal no plano (SCN-TRAIN-ROTINA-MAQUINAS)
 
 - **Motivo:** Inclusão da rotina semanal de treino no summary do POST /api/v1/plans/weekly (REQ-PLAN-001, SCN-TRAIN-ROTINA-MAQUINAS). Segunda = descanso; quinta e domingo = pernas; sexta = descanso ativo; sábado = membros superiores; terça e quarta = treino genérico. Campo `machines_only` no summary para preferência “apenas máquinas” (preferência virá de onboarding quando existir).

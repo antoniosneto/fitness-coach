@@ -30,8 +30,8 @@ Collection **Postman** para testar os endpoints: `docs/postman/` (arquivo `Fitne
 
 ## Estado atual do backend (Épico 1)
 
-- **Implementado:** Auth (signup, login com JWT, Argon2id, proteção força bruta 5 falhas → 429), Onboarding (PUT profile, PUT goals com validação 1,5%/semana), **Plans** (POST /plans/weekly com Motor de Metas: GCT Mifflin-St Jeor, déficit por intensidade, sugestão TACO, estrutura de treino semanal SCN-TRAIN-ROTINA-MAQUINAS em `summary.weekly_training` e `summary.machines_only`), JWT Guard/Strategy, Prisma 7 com adapter pg, banco local (Docker ou Homebrew), seed TACO, collection Postman (incluindo POST Plans Weekly).
+- **Implementado:** Auth (signup, login com JWT, Argon2id, proteção força bruta 5 falhas → 429, **recuperação de senha** REQ-AUTH-003: POST /auth/forgot-password e POST /auth/reset-password com token temporário e abstração de e-mail ADR-002), Onboarding (PUT profile, PUT goals com validação 1,5%/semana), **Plans** (POST /plans/weekly com Motor de Metas, estrutura de treino semanal), JWT Guard/Strategy, Prisma 7 com adapter pg, banco local (Docker ou Homebrew), seed TACO, collection Postman.
 - **Documentado para o frontend:** Request/response de todos os endpoints em [contratos-frontend.md](contratos-frontend.md); erros 400/401/404/409/422/429 com formato padrão.
-- **Pendente (próximos passos):** Estrutura de treino semanal no plano (SCN-TRAIN-ROTINA-MAQUINAS), preferências (treino/esporte) se definido no contrato, testes e2e dos SCN-*, recuperação de senha (REQ-AUTH-003).
+- **Pendente (próximos passos):** Preferências (treino/esporte) se definido no contrato, testes e2e dos SCN-*.
 
 A documentação é mantida pelo **Agente Documentador** (`agents/documentador-backend.md`) a cada alteração no backend.

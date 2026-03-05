@@ -63,6 +63,60 @@ Este documento define **exatamente** o que o frontend deve **enviar** (request b
 
 ---
 
+## 2.1. POST /api/v1/auth/forgot-password (REQ-AUTH-003)
+
+**Autenticação:** não exigida.
+
+**O que o frontend envia (body):**
+
+```json
+{
+  "email": "usuario@email.com"
+}
+```
+
+| Campo | Tipo   | Obrigatório |
+|-------|--------|-------------|
+| email | string | sim         | Formato email válido |
+
+**O que o frontend recebe:**
+
+| Status | Body |
+|--------|------|
+| **200** | Corpo vazio. Sempre 200 (não indica se o e-mail existe). Exibir mensagem: "Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha." |
+| **400** | `{ "statusCode": 400, "message": [...], "error": "Bad Request" }` — validação (ex.: e-mail inválido). |
+| **429** | `{ "statusCode": 429, "message": "Muitas tentativas. Tente novamente em 15 minutos.", "error": "Too Many Requests" }` — rate limit (par IP+email). |
+
+---
+
+## 2.2. POST /api/v1/auth/reset-password (REQ-AUTH-003)
+
+**Autenticação:** não exigida. Token recebido por e-mail no link de recuperação.
+
+**O que o frontend envia (body):**
+
+```json
+{
+  "token": "valor-do-token-recebido-no-email",
+  "new_password": "novasenha123"
+}
+```
+
+| Campo        | Tipo   | Obrigatório |
+|--------------|--------|-------------|
+| token        | string | sim         | Token do link de redefinição |
+| new_password | string | sim         | Mínimo 8 caracteres |
+
+**O que o frontend recebe:**
+
+| Status | Body |
+|--------|------|
+| **200** | Corpo vazio. Senha redefinida; redirecionar para login. |
+| **400** | `{ "statusCode": 400, "message": "Link inválido ou expirado.", "error": "Bad Request" }` — token inválido, expirado ou já usado; ou senha não atende às regras. |
+| **429** | `{ "statusCode": 429, ... }` — rate limiting. |
+
+---
+
 ## 3. PUT /api/v1/onboarding/profile
 
 **Autenticação:** obrigatório header `Authorization: Bearer <access_token>`.
