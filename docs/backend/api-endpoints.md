@@ -125,8 +125,31 @@ Define meta de composição corporal (BodyCompositionGoal). Valida taxa de perda
 
 ---
 
+## Plans
+
+Rotas protegidas: enviar `Authorization: Bearer <access_token>`.
+
+### POST /api/v1/plans/weekly
+
+Gera o plano semanal (Motor de Metas: GCT Mifflin-St Jeor, déficit por intensidade, sugestão de refeições via TACO). Verifica se onboarding (UserProfile e BodyCompositionGoal) está completo; caso contrário retorna 422.
+
+**Request body:** nenhum (usa dados do usuário autenticado e do perfil/metas já cadastrados).
+
+**Respostas:**
+
+| Código | Descrição |
+|--------|-----------|
+| 201    | Plano semanal gerado; body com weekly_plan_id, start_date, end_date, target_kcal_per_day, summary (daily_targets, suggested_meals) |
+| 401    | Não autenticado |
+| 422    | Dados de onboarding incompletos (perfil ou metas ausentes) |
+
+**Response 201:** ver formato exato em [contratos-frontend.md](contratos-frontend.md). Detalhes de erros em 422: [contratos-frontend.md](contratos-frontend.md).
+
+---
+
 ## Endpoints planejados (Épico 1, ainda não implementados)
 
-- **POST /api/v1/plans/weekly** – Gerar plano semanal (autenticado).
+- Recuperação de senha (REQ-AUTH-003).
+- Preferências de treino/esporte (se definido no contrato).
 
 Contratos detalhados: PRD e refinamento técnico.

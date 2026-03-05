@@ -138,6 +138,39 @@ Este documento define **exatamente** o que o frontend deve **enviar** (request b
 
 ---
 
+## 5. POST /api/v1/plans/weekly
+
+**Autenticação:** obrigatório header `Authorization: Bearer <access_token>`.
+
+**O que o frontend envia (body):** Nenhum. O backend usa o usuário do JWT e os dados já cadastrados em perfil e metas.
+
+**O que o frontend recebe:**
+
+| Status | Body |
+|--------|------|
+| **201** | Objeto com: `weekly_plan_id` (string), `start_date` (string ISO date, ex.: "2026-03-03"), `end_date` (string), `target_kcal_per_day` (number), `summary` (objeto com `daily_targets`: `{ kcal, protein_g, carb_g, fat_g }` e `suggested_meals`: array de `{ food_id, description, kcal, protein_g, carb_g, fat_g }`). |
+| **401** | `{ "statusCode": 401, "message": "Unauthorized", "error": "Unauthorized" }` |
+| **422** | `{ "statusCode": 422, "message": "Dados de onboarding incompletos. Conclua perfil e metas antes de gerar o plano.", "error": "Unprocessable Entity" }` — orientar o usuário a completar perfil e metas antes de gerar o plano. |
+
+**Exemplo de response 201:**
+
+```json
+{
+  "weekly_plan_id": "uuid",
+  "start_date": "2026-03-03",
+  "end_date": "2026-03-09",
+  "target_kcal_per_day": 1920,
+  "summary": {
+    "daily_targets": { "kcal": 1920, "protein_g": 128, "carb_g": 180, "fat_g": 64 },
+    "suggested_meals": [
+      { "food_id": "...", "description": "Arroz...", "kcal": 130, "protein_g": 2.7, "carb_g": 28, "fat_g": 0.3 }
+    ]
+  }
+}
+```
+
+---
+
 ## Formato padrão de erro (NestJS)
 
 Em respostas 4xx/5xx, o body segue o padrão:
