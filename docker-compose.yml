@@ -1,0 +1,25 @@
+# PostgreSQL local para desenvolvimento e testes do backend (Épico 1)
+# Uso: docker compose up -d   (na raiz do projeto)
+# Depois: cd backend && npx prisma migrate dev
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fitness-coach-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: fitness
+      POSTGRES_PASSWORD: fitness_local
+      POSTGRES_DB: fitness_coach
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fitness -d fitness_coach"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

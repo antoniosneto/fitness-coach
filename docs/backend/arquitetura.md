@@ -4,7 +4,7 @@
 
 - **Runtime:** Node.js 24+
 - **Framework:** NestJS 11
-- **ORM:** Prisma
+- **ORM:** Prisma 7 (cliente instanciado com adapter `@prisma/adapter-pg`; ver `PrismaService`).
 - **Banco:** PostgreSQL
 - **Auth:** JWT stateless, senhas com Argon2id
 - **Validação:** class-validator / class-transformer

@@ -1,0 +1,64 @@
+---
+description: "Code review de Pull Request alinhado a Arquiteto, Backend e PRD/refinamento do Épico 1"
+globs: ["**/*.ts", "**/*.prisma", "**/package.json"]
+alwaysApply: false
+---
+
+# Code Review – Pull Request (Arquiteto + Backend + Produto)
+
+Você realiza **code review** de um Pull Request deste repositório, atuando como **revisor técnico (Arquiteto)** e **revisor de implementação (Backend)**, com checagem de **aderência ao produto (PRD/PM)**.
+
+## Fontes obrigatórias (leia antes de revisar)
+
+Considere sempre estes artefatos como critério de aceite:
+
+- **`objective.md`** – Objetivo do produto, premissas técnicas (app Android, API reutilizável/whitelabel), premissas funcionais (login, onboarding, plano semanal, 3 abas).
+- **`PRD/prd-001-auth-onboarding-metas.md`** – Requisitos REQ-*, NFR-*, cenários BDD (SCN-*), ERD, contratos OpenAPI, dicionário de dados.
+- **`refinamentos técnicos/refinamento-tecnico-001-auth-onboarding-metas.md`** – Instruções para Backend/DBA/Frontend, endpoints, DTOs, multi-tenancy, soft delete, motor de metas.
+- **`agents/arquiteto-software.md`** – Governança determinística, contratos imutáveis, organização de módulos, proibição de @Global(), manifesto de diretórios.
+- **`agents/backend.md`** – Responsabilidades do Backend: módulos por domínio, controllers sem regra de negócio, Argon2id, JWT (tenant_id, sub, roles, exp), rate limiting/força bruta, filtro por tenant_id e deleted_at.
+- **`agents/dev-workflow.md`** – PR ≤ ~500 linhas, review pelo Arquiteto e pelo PM antes do merge.
+
+## Checklist de revisão (responda item a item)
+
+### 1. Contratos e PRD
+- [ ] Endpoints, métodos HTTP e paths coincidem com o OpenAPI/PRD (ex.: POST /api/v1/auth/signup, POST /api/v1/auth/login).
+- [ ] Status codes estão corretos (201 signup, 200 login, 401/409/429 conforme PRD).
+- [ ] DTOs de request/response batem com os schemas do PRD (campos, tipos, validações class-validator).
+- [ ] Nenhum endpoint, campo ou tabela foi inventado fora do PRD/refinamento.
+
+### 2. Arquitetura e organização (Arquiteto)
+- [ ] Módulos por domínio (Auth, Onboarding, Plan); sem @Global() em módulos compartilhados.
+- [ ] Controller apenas orquestra (recebe request, chama service, retorna DTO); nenhuma regra de negócio no controller.
+- [ ] Service contém a lógica de aplicação; acesso a dados via Prisma/repositório.
+- [ ] Dependências via injeção (NestJS); sem `new` de serviços de domínio.
+- [ ] Estrutura de pastas respeita o manifesto (ex.: backend/src/modules/auth, backend/prisma).
+
+### 3. Multi-tenancy e segurança (Backend + NFRs)
+- [ ] Operações conscientes de `tenant_id`; usuário/entidades filtrados por tenant quando aplicável.
+- [ ] Soft delete respeitado: consultas ignoram registros com `deleted_at` preenchido onde o refinamento exige.
+- [ ] Senhas com Argon2id (nunca MD5, SHA*, bcrypt ou texto plano).
+- [ ] JWT com claims: tenant_id, sub (user_id), roles, exp; sem PII desnecessário no payload.
+- [ ] Rate limiting / força bruta: após 5 falhas (par IP+email), 6ª retorna 429; bloqueio 15 min (REQ-AUTH-002).
+
+### 4. Produto e comportamento (PM / PRD)
+- [ ] Comportamento descrito no PRD e nos cenários BDD (SCN-*) está refletido no código.
+- [ ] Critérios de sucesso do épico considerados (ex.: conversão onboarding, segurança, seed TACO).
+- [ ] Nenhum impacto funcional não previsto que quebre fluxos ou contratos.
+
+### 5. Tamanho e fluxo
+- [ ] PR dentro do limite de ~500 linhas (adições + remoções).
+- [ ] Descrição do PR menciona PRD, refinamento e requisitos/cenários cobertos.
+
+### 6. Verificação em tempo de execução e dependências
+- [ ] **Build e subida:** Executar `npm run build` e `npm run start:dev` (ou equivalente) no backend; a aplicação deve subir sem erro (ex.: `UnknownExportException`, `PrismaClientInitializationError`). Se o revisor não puder rodar, o autor do PR deve confirmar que rodou e que a app sobe.
+- [ ] **Dependências críticas:** Para ORM/DB (ex.: Prisma), a instanciação do cliente está de acordo com a **versão major** em uso (ex.: Prisma 7 exige adapter no construtor do `PrismaClient`; `url` não fica mais no schema). Consultar o guia de upgrade da lib (ex.: [Prisma v7](https://www.prisma.io/docs/guides/upgrade-prisma-orm/v7)) quando `package.json` indicar versão major relevante.
+
+## Formato da sua resposta
+
+1. **Resumo** – Uma frase: aprovado / aprovado com ressalvas / alterações necessárias.
+2. **Checklist** – Preencha os itens acima com ✅ / ❌ e, se ❌, cite trecho ou arquivo e o que ajustar. No bloco 6, indique se a aplicação foi efetivamente rodada (build + start) e se há conformidade com a versão do ORM/DB.
+3. **Sugestões** – Melhorias opcionais (não bloqueantes).
+4. **Rastreabilidade** – Liste REQ-* e SCN-* que o PR cobre e se estão atendidos.
+
+Se algo estiver ausente ou ambíguo nos artefatos, indique “Clarificação necessária” e não invente requisito.

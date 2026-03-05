@@ -1,0 +1,148 @@
+{
+  "info": {
+    "name": "Fitness Coach API – Épico 1",
+    "description": "Collection para testar Auth e Onboarding (signup, login, profile, goals) incluindo o cenário 422 em Goals.\n\n**Ordem sugerida:** 1) Signup, 2) Login, 3) PUT Profile, 4) PUT Goals (200), 5) PUT Goals (expect 422) para validar REQ-GOAL-001.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000" },
+    { "key": "access_token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Signup",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    console.log('Usuário criado. Agora use Login para obter o token.');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"teste@email.com\",\n  \"password\": \"12345678\",\n  \"name\": \"Usuário Teste\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/auth/signup",
+            "description": "Cria usuário e perfil inicial. Respostas: 201 OK, 409 email já usado, 400 validação."
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const json = pm.response.json();",
+                  "    if (json.access_token) {",
+                  "        pm.collectionVariables.set('access_token', json.access_token);",
+                  "        console.log('Token salvo na variável access_token.');",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"teste@email.com\",\n  \"password\": \"12345678\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/auth/login",
+            "description": "Retorna JWT. O token é salvo automaticamente em access_token para as rotas de onboarding."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Onboarding",
+      "item": [
+        {
+          "name": "PUT Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Usuário Teste\",\n  \"sex\": \"male\",\n  \"birth_date\": \"1990-01-15\",\n  \"weight_kg\": 80,\n  \"height_cm\": 175,\n  \"body_fat_percentage\": 22\n}"
+            },
+            "url": "{{base_url}}/api/v1/onboarding/profile",
+            "description": "Atualiza perfil biométrico. Requer JWT. Opcional: body_fat_visual_id (ex.: \"25\" ou \"medium\") em vez de body_fat_percentage."
+          }
+        },
+        {
+          "name": "PUT Goals",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_weight_kg\": 80,\n  \"current_body_fat_percent\": 22,\n  \"target_weight_kg\": 75,\n  \"target_body_fat_percent\": 18,\n  \"months_to_target\": 4,\n  \"intensity\": \"medium\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/onboarding/goals",
+            "description": "Define meta de composição. Valida taxa de perda ≤ 1,5%/semana; se não passar retorna 422."
+          }
+        },
+        {
+          "name": "PUT Goals (expect 422)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 422 - meta fisiologicamente insegura', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "pm.test('Body contém mensagem sobre limite seguro', function () {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.message || body.error || '').to.include('1.5');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_weight_kg\": 80,\n  \"current_body_fat_percent\": 25,\n  \"target_weight_kg\": 60,\n  \"target_body_fat_percent\": 15,\n  \"months_to_target\": 2,\n  \"intensity\": \"high\"\n}"
+            },
+            "url": "{{base_url}}/api/v1/onboarding/goals",
+            "description": "Teste REQ-GOAL-001: meta com taxa de perda > 1,5%/semana (80→60 kg em 2 meses). Esperado: 422 e mensagem sobre limite seguro."
+          }
+        }
+      ]
+    }
+  ]
+}
