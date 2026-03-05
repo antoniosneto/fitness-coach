@@ -69,6 +69,8 @@ export class PlanService {
     );
 
     const { startDate, endDate } = this.getCurrentWeekBounds();
+    const machinesOnly = true; // SCN-TRAIN-ROTINA-MAQUINAS; preferência virá de TrainingPreference quando existir
+    const weeklyTraining = this.goalsMotor.buildWeeklyTrainingSchedule(machinesOnly);
     const summary: WeeklyPlanResponseDto['summary'] = {
       daily_targets: {
         kcal: dailyTargets.targetKcal,
@@ -77,6 +79,8 @@ export class PlanService {
         fat_g: dailyTargets.targetFatG,
       },
       suggested_meals: suggestedMeals,
+      weekly_training: weeklyTraining,
+      machines_only: machinesOnly,
     };
 
     const plan = await this.prisma.weeklyPlan.create({

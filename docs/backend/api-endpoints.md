@@ -139,7 +139,7 @@ Gera o plano semanal (Motor de Metas: GCT Mifflin-St Jeor, déficit por intensid
 
 | Código | Descrição |
 |--------|-----------|
-| 201    | Plano semanal gerado; body com weekly_plan_id, start_date, end_date, target_kcal_per_day, summary (daily_targets, suggested_meals) |
+| 201    | Plano semanal gerado; body com weekly_plan_id, start_date, end_date, target_kcal_per_day, summary (daily_targets, suggested_meals, weekly_training, machines_only) |
 | 401    | Não autenticado |
 | 422    | Dados de onboarding incompletos (perfil ou metas ausentes) |
 

@@ -167,6 +167,14 @@
                   "    pm.expect(body).to.have.property('summary');",
                   "    pm.expect(body.summary).to.have.property('daily_targets');",
                   "    pm.expect(body.summary).to.have.property('suggested_meals');",
+                  "});",
+                  "pm.test('Summary contém weekly_training e machines_only (SCN-TRAIN-ROTINA-MAQUINAS)', function () {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.summary).to.have.property('weekly_training');",
+                  "    pm.expect(body.summary.weekly_training).to.be.an('array');",
+                  "    pm.expect(body.summary.weekly_training.length).to.equal(7);",
+                  "    pm.expect(body.summary).to.have.property('machines_only');",
+                  "    pm.expect(body.summary.machines_only).to.be.a('boolean');",
                   "});"
                 ],
                 "type": "text/javascript"

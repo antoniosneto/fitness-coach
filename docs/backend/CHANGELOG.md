@@ -4,6 +4,14 @@ Registro de atualizações feitas pelo **Agente Documentador** (`agents/document
 
 ---
 
+## 2026-03-05 – Estrutura de treino semanal no plano (SCN-TRAIN-ROTINA-MAQUINAS)
+
+- **Motivo:** Inclusão da rotina semanal de treino no summary do POST /api/v1/plans/weekly (REQ-PLAN-001, SCN-TRAIN-ROTINA-MAQUINAS). Segunda = descanso; quinta e domingo = pernas; sexta = descanso ativo; sábado = membros superiores; terça e quarta = treino genérico. Campo `machines_only` no summary para preferência “apenas máquinas” (preferência virá de onboarding quando existir).
+- **Arquivos alterados:** backend: GoalsMotorService.buildWeeklyTrainingSchedule(), DTO weekly_training e machines_only; docs: contratos-frontend.md (exemplo 201), api-endpoints.md, CHANGELOG.md; Postman: teste de weekly_training e machines_only no POST Weekly.
+- **Requisitos/cenários:** REQ-PLAN-001, SCN-TRAIN-ROTINA-MAQUINAS.
+
+---
+
 ## 2026-03-05 – POST /plans/weekly e Motor de Metas
 
 - **Motivo:** Implementação do PlanModule com endpoint POST /api/v1/plans/weekly (REQ-GOAL-002, REQ-GOAL-003, REQ-PLAN-001/002). Motor de Metas: GCT por Mifflin-St Jeor, déficit 20% para intensidade medium, sugestão de refeições via TACO (Food).

@@ -50,6 +50,14 @@ export interface MealSuggestion {
   fat_g: number;
 }
 
+/** Um dia da rotina semanal (SCN-TRAIN-ROTINA-MAQUINAS). day_of_week ISO: 1=segunda .. 7=domingo. */
+export interface WeeklyTrainingDay {
+  day_of_week: number;
+  day_name: string;
+  type: 'rest' | 'active_rest' | 'upper_body' | 'legs' | 'training';
+  description: string;
+}
+
 @Injectable()
 export class GoalsMotorService {
   constructor(private readonly prisma: PrismaService) {}
@@ -121,6 +129,24 @@ export class GoalsMotorService {
     }
 
     return suggestions;
+  }
+
+  /**
+   * REQ-PLAN-001 / SCN-TRAIN-ROTINA-MAQUINAS: monta a estrutura semanal de treino.
+   * Segunda = descanso; quinta e domingo = pernas; sexta = descanso ativo; sábado = membros superiores.
+   * Terça e quarta = treino genérico (placeholder até preferências de treino no onboarding).
+   * machinesOnly: quando true, sugestões futuras de exercício devem excluir peso livre (apenas máquinas).
+   */
+  buildWeeklyTrainingSchedule(machinesOnly: boolean): WeeklyTrainingDay[] {
+    return [
+      { day_of_week: 1, day_name: 'Segunda', type: 'rest', description: 'Descanso' },
+      { day_of_week: 2, day_name: 'Terça', type: 'training', description: 'Treino' },
+      { day_of_week: 3, day_name: 'Quarta', type: 'training', description: 'Treino' },
+      { day_of_week: 4, day_name: 'Quinta', type: 'legs', description: 'Pernas (quadríceps e posterior)' },
+      { day_of_week: 5, day_name: 'Sexta', type: 'active_rest', description: 'Descanso ativo' },
+      { day_of_week: 6, day_name: 'Sábado', type: 'upper_body', description: 'Membros superiores (Upper Day Estético)' },
+      { day_of_week: 7, day_name: 'Domingo', type: 'legs', description: 'Pernas (quadríceps e posterior)' },
+    ];
   }
 
   /**

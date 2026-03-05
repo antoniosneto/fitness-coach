@@ -148,7 +148,7 @@ Este documento define **exatamente** o que o frontend deve **enviar** (request b
 
 | Status | Body |
 |--------|------|
-| **201** | Objeto com: `weekly_plan_id` (string), `start_date` (string ISO date, ex.: "2026-03-03"), `end_date` (string), `target_kcal_per_day` (number), `summary` (objeto com `daily_targets`: `{ kcal, protein_g, carb_g, fat_g }` e `suggested_meals`: array de `{ food_id, description, kcal, protein_g, carb_g, fat_g }`). |
+| **201** | Objeto com: `weekly_plan_id`, `start_date`, `end_date`, `target_kcal_per_day`, `summary` (contendo `daily_targets`, `suggested_meals`, `weekly_training` e `machines_only` — ver exemplo). |
 | **401** | `{ "statusCode": 401, "message": "Unauthorized", "error": "Unauthorized" }` |
 | **422** | `{ "statusCode": 422, "message": "Dados de onboarding incompletos. Conclua perfil e metas antes de gerar o plano.", "error": "Unprocessable Entity" }` — orientar o usuário a completar perfil e metas antes de gerar o plano. |
 
@@ -164,10 +164,21 @@ Este documento define **exatamente** o que o frontend deve **enviar** (request b
     "daily_targets": { "kcal": 1920, "protein_g": 128, "carb_g": 180, "fat_g": 64 },
     "suggested_meals": [
       { "food_id": "...", "description": "Arroz...", "kcal": 130, "protein_g": 2.7, "carb_g": 28, "fat_g": 0.3 }
-    ]
+    ],
+    "weekly_training": [
+      { "day_of_week": 1, "day_name": "Segunda", "type": "rest", "description": "Descanso" },
+      { "day_of_week": 4, "day_name": "Quinta", "type": "legs", "description": "Pernas (quadríceps e posterior)" },
+      { "day_of_week": 5, "day_name": "Sexta", "type": "active_rest", "description": "Descanso ativo" },
+      { "day_of_week": 6, "day_name": "Sábado", "type": "upper_body", "description": "Membros superiores (Upper Day Estético)" },
+      { "day_of_week": 7, "day_name": "Domingo", "type": "legs", "description": "Pernas (quadríceps e posterior)" }
+    ],
+    "machines_only": true
   }
 }
 ```
+
+- `summary.weekly_training`: array de 7 dias (SCN-TRAIN-ROTINA-MAQUINAS). Cada item: `day_of_week` (1=segunda .. 7=domingo), `day_name`, `type` (`rest` \| `active_rest` \| `upper_body` \| `legs` \| `training`), `description`.
+- `summary.machines_only`: quando `true`, sugestões de exercício (em épicos futuros) devem priorizar máquinas e excluir peso livre.
 
 ---
 
