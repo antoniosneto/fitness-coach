@@ -13,6 +13,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
+    "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
     "lint": "echo \"No linter configured yet\""
   },
@@ -26,6 +27,7 @@
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.15",
+    "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
     "argon2": "^0.44.0",
     "class-transformer": "^0.5.1",
@@ -33,6 +35,7 @@
     "dotenv": "^17.3.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "pg": "^8.19.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
   },
@@ -43,9 +46,11 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^25.3.3",
     "@types/passport-jwt": "^4.0.1",
+    "@types/pg": "^8.18.0",
     "jest": "^30.2.0",
     "prisma": "^7.4.2",
     "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
