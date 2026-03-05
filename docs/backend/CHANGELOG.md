@@ -4,6 +4,14 @@ Registro de atualizações feitas pelo **Agente Documentador** (`agents/document
 
 ---
 
+## 2026-03-05 – POST /plans/weekly e Motor de Metas
+
+- **Motivo:** Implementação do PlanModule com endpoint POST /api/v1/plans/weekly (REQ-GOAL-002, REQ-GOAL-003, REQ-PLAN-001/002). Motor de Metas: GCT por Mifflin-St Jeor, déficit 20% para intensidade medium, sugestão de refeições via TACO (Food).
+- **Arquivos de doc alterados:** api-endpoints.md (seção Plans), arquitetura.md (PlanModule, estrutura plan/), contratos-frontend.md (seção 5 – POST /plans/weekly), README.md (estado atual), CHANGELOG.md.
+- **Requisitos/cenários:** REQ-GOAL-002 (déficit 20%), REQ-GOAL-003 (TACO), SCN-GOAL-METAS-MEDIUM. 422 quando onboarding incompleto.
+
+---
+
 ## 2026-03-04 – Seed TACO (alimentos base)
 
 - **Motivo:** Script de seed para popular a tabela FOOD (refinamento 2.4), associado ao tenant "default", sem APIs externas.

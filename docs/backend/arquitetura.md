@@ -32,10 +32,16 @@ backend/
 │       │   ├── guards/jwt-auth.guard.ts
 │       │   ├── decorators/current-user.decorator.ts
 │       │   └── dto/
-│       └── onboarding/    # OnboardingModule: profile, goals
-│           ├── onboarding.module.ts
-│           ├── onboarding.controller.ts
-│           ├── onboarding.service.ts
+│       ├── onboarding/    # OnboardingModule: profile, goals
+│       │   ├── onboarding.module.ts
+│       │   ├── onboarding.controller.ts
+│       │   ├── onboarding.service.ts
+│       │   └── dto/
+│       └── plan/          # PlanModule: plano semanal (Motor de Metas)
+│           ├── plan.module.ts
+│           ├── plan.controller.ts
+│           ├── plan.service.ts
+│           ├── services/goals-motor.service.ts
 │           └── dto/
 ├── .env.example
 └── package.json
@@ -48,6 +54,7 @@ backend/
 | PrismaModule | Conexão ao DB, PrismaService | — |
 | AuthModule | Cadastro, login, JWT, Strategy/Guard, proteção força bruta | /auth/signup, /auth/login |
 | OnboardingModule | Perfil biométrico e metas de composição corporal | /onboarding/profile, /onboarding/goals |
+| PlanModule | Plano semanal, Motor de Metas (GCT, déficit, TACO) | /plans/weekly |
 
 - **Sem @Global():** Módulos compartilhados são importados onde forem usados (ex.: AuthModule importa PrismaModule).
 - **Controllers** apenas orquestram (recebem request, chamam service, retornam DTO).
