@@ -1,10 +1,10 @@
 ## Fluxo de Trabalho Multi‑Agentes (DBA, Backend, Frontend, Documentador)
 
-Este documento define o **fluxo obrigatório de desenvolvimento** para os agentes **DBA**, **Backend**, **Frontend** e **Documentador do Backend** neste projeto.
+Este documento define o **fluxo obrigatório de desenvolvimento** para os agentes **DBA**, **Backend**, **Frontend** e **Documentadores** neste projeto.
 
 - **Escopo**: vale para qualquer entrega relacionada aos épicos descritos em `PRD/*.md` e seus refinamentos técnicos.
 - **Tamanho máximo de entrega**: cada Pull Request deve conter **no máximo ~500 linhas modificadas** (soma de adições + remoções) para manter code review eficiente.
-- **Documentação do backend**: a pasta `docs/backend/` é mantida pelo **Agente Documentador** (`agents/documentador-backend.md`). Toda alteração no backend deve acionar o Documentador antes do commit/PR (ver passo 7 abaixo).
+- **Documentação:** Em tarefa de **backend** (alteração em `backend/`), acionar o **Documentador do Backend** (`agents/documentador-backend.md`) — passo 7. Em tarefa de **frontend** (alteração em `app/`), acionar o **Documentador do Frontend** (`agents/documentador-frontend.md`) — passo 7. Nunca acionar o documentador do outro stack (frontend não aciona documentador-backend; backend não aciona documentador-frontend).
 
 ---
 
@@ -20,7 +20,7 @@ A ordem abaixo é **obrigatória** para que a entrega esteja alinhada ao Arquite
 | 4 | **Criar/atualizar os testes da API** | Usar `docs/postman/Fitness-Coach-API-Epico1.postman_collection.json`: incluir ou ajustar requests para os novos endpoints e cenários (ex.: 422). |
 | 5 | **Rodar os testes** | Executar a collection no Postman (ou Runner); garantir que todos os requests passem (status e, se houver, scripts de teste). |
 | 6 | **Solicitar revisão de código** | Usar `.cursor/rules/code-review-pr.mdc` e `docs/CODE-REVIEW-AI.md`: checklist de contratos, arquitetura, segurança, build + start e dependências (ex.: Prisma 7). |
-| 7 | **Chamar o Documentador do Backend** | Acionar `agents/documentador-backend.md` com resumo do que foi feito; atualizar `docs/backend/` e `docs/backend/contratos-frontend.md` (request/response). |
+| 7 | **Chamar o Documentador (Backend ou Frontend)** | **Tarefa de backend** (alteração em `backend/`): acionar `agents/documentador-backend.md`. **Tarefa de frontend** (alteração em `app/`): acionar `agents/documentador-frontend.md`. Acionar apenas o documentador correspondente ao que foi alterado. |
 | 8 | **Commit e Pull Request** | Fazer commit(s) incluindo código e documentação; abrir PR para `main` com descrição (PRD, refinamento, REQ-*/SCN-*). |
 
 Após abertura do PR: **Code Review** pelo Arquiteto e pelo Product Manager; ajustes se necessário; merge somente após aprovação.
@@ -67,22 +67,34 @@ Após abertura do PR: **Code Review** pelo Arquiteto e pelo Product Manager; aju
   - **Guia e prompt:** `docs/CODE-REVIEW-AI.md` (como rodar o review e o que colar no prompt).
 - O revisor (ou a IA) deve preencher o checklist e indicar se a aplicação foi rodada (build + start) e se há conformidade com a versão do ORM/DB (ex.: Prisma 7).
 
-### 7. Chamar o Documentador do Backend
+### 7. Chamar o Documentador (Backend ou Frontend)
 
-- **Sempre que** houver alteração em `backend/` ou `backend/prisma/`: acionar o **Agente Documentador** (`agents/documentador-backend.md`) com:
+Acionar **apenas um** documentador, conforme o tipo de tarefa (o que foi alterado):
+
+- **Tarefa de backend** (alteração em `backend/` ou `backend/prisma/`): acionar o **Agente Documentador do Backend** (`agents/documentador-backend.md`) com:
   ```
   Documentador: atualize a documentação do backend.
   **O que foi feito:** [resumo do commit ou da alteração]
   **Arquivos/módulos alterados:** [ex.: backend/src/modules/auth/, backend/prisma/schema.prisma]
   **Requisitos/cenários (opcional):** [ex.: REQ-AUTH-001]
   ```
-- O Documentador atualiza `docs/backend/` (README, arquitetura, api-endpoints, modelo-dados, ambiente-e-contratos, **contratos-frontend.md**) e o `CHANGELOG.md`.
-- Incluir as alterações de documentação no **mesmo commit** (ou commit seguinte na mesma branch) antes do PR.
+  O Documentador atualiza `docs/backend/` e o `CHANGELOG.md`.
+
+- **Tarefa de frontend** (alteração em `app/`): acionar o **Agente Documentador do Frontend** (`agents/documentador-frontend.md`) com:
+  ```
+  Documentador: atualize a documentação do frontend.
+  **O que foi feito:** [resumo do commit ou da alteração]
+  **Arquivos/pastas alterados:** [ex.: app/lib/features/auth/, app/lib/core/network/]
+  **Requisitos/cenários (opcional):** [ex.: REQ-AUTH-001, Fase 1]
+  ```
+  O Documentador atualiza `docs/frontend/` e o `CHANGELOG.md`.
+
+Incluir as alterações de documentação no **mesmo commit** (ou commit seguinte na mesma branch) antes do PR. Em tarefa de frontend **não** acionar o documentador do backend; em tarefa de backend **não** acionar o documentador do frontend.
 
 ### 8. Commit e Pull Request
 
-- **Acionar o Agente Git** (`agents/git.md`) para commit, push e abertura do PR. O Agente Git garante que **credenciais** (`user.name`, `user.email`) estejam configuradas antes de qualquer commit e segue Conventional Commits.
-- Fazer commit(s) com mensagem clara; abrir **Pull Request** da branch de feature para **main**.
+- **Ler e seguir** a documentação do **Agente Git** (`agents/git.md`) ao executar este passo. Acionar o Agente Git para commit, push e abertura do PR. O Agente Git garante que **credenciais** (`user.name`, `user.email`) estejam configuradas antes de qualquer commit, que **push seja feito sempre após cada commit** e que se use Conventional Commits.
+- Fazer commit(s) com mensagem clara; **sempre fazer push** da branch em seguida; abrir **Pull Request** da branch de feature para **main**.
 - Na descrição do PR: qual PRD e refinamento, quais REQ-* e SCN-* são cobertos, tamanho aproximado em linhas (~500 máx.).
 
 ### 9. Revisão pelo Arquiteto e pelo Product Manager
@@ -107,7 +119,7 @@ flowchart TD
     E --> F[Criar/atualizar testes Postman]
     F --> G[Rodar testes]
     G --> H[Code review: code-review-pr + CODE-REVIEW-AI]
-    H --> I[Chamar Documentador backend]
+    H --> I[Chamar Documentador: backend ou frontend conforme tarefa]
     I --> J[Commit e Pull Request]
     J --> K[Review Arquiteto + PM]
     K --> L{Ajustes?}
@@ -122,9 +134,17 @@ flowchart TD
 
 - **Responsável:** Agente Documentador (`agents/documentador-backend.md`).
 - **Documentação:** `docs/backend/` (README, arquitetura, api-endpoints, modelo-dados, ambiente-e-contratos, contratos-frontend, CHANGELOG).
-- **Quando é acionado:** Sempre que houver commit ou alteração em `backend/` (código ou Prisma). O Backend (ou o desenvolvedor) deve chamar o Documentador com o resumo do que foi feito (passo 7 do fluxo).
+- **Quando é acionado:** Sempre que a tarefa for de backend (commit ou alteração em `backend/` ou Prisma). O Backend (ou o desenvolvedor) chama o Documentador do Backend no passo 7 — não o Documentador do Frontend.
 - **O que o Documentador faz:** (1) Lê o estado atual do backend; (2) Atualiza os arquivos em `docs/backend/` para refletir a realidade do código, incluindo request/response em `contratos-frontend.md`; (3) Adiciona entrada em `CHANGELOG.md`.
 - **Objetivo:** Frontend, DBA e Arquiteto conseguirem trabalhar **sem contexto prévio**, usando apenas `docs/backend/` e os artefatos referenciados (PRD, schema, ADRs).
+
+## Fluxo do Documentador do Frontend
+
+- **Responsável:** Agente Documentador do Frontend (`agents/documentador-frontend.md`).
+- **Documentação:** `docs/frontend/` (README, arquitetura, telas-e-fluxos, modelos-e-estado, ambiente-e-contratos, CHANGELOG).
+- **Quando é acionado:** Sempre que a tarefa for de frontend (commit ou alteração em `app/`). O Frontend (ou o desenvolvedor) chama o Documentador do Frontend no passo 7 — não o Documentador do Backend.
+- **O que o Documentador faz:** (1) Lê o estado atual do frontend (`app/lib/`, `pubspec.yaml`); (2) Atualiza os arquivos em `docs/frontend/` para refletir a realidade do código; (3) Adiciona entrada em `CHANGELOG.md`.
+- **Objetivo:** Backend, Arquiteto e PM conseguirem entender telas, fluxos, estado e integração com a API **sem contexto prévio**, usando apenas `docs/frontend/` e os artefatos referenciados (contratos em `docs/backend/`).
 
 ---
 
@@ -132,8 +152,9 @@ flowchart TD
 
 - **Responsável:** Agente Git (`agents/git.md`).
 - **Quando é acionado:** No passo 8 (Commit e Pull Request) ou quando o usuário pedir commit, push ou abertura de PR.
-- **O que o Agente Git faz:** (1) Verifica se `user.name` e `user.email` estão configurados; se não, informa o usuário e não commita até a configuração. (2) Garante que não há arquivos sensíveis no stage. (3) Faz commit(s) com Conventional Commits, push da branch e indica o link para abrir o PR.
-- **Objetivo:** Não esquecer credenciais e manter commits/PRs consistentes com o fluxo do projeto.
+- **Obrigatório:** No passo 8, **sempre ler** `agents/git.md` antes de executar commit/push/PR, para seguir credenciais, push pós-commit e Conventional Commits.
+- **O que o Agente Git faz:** (1) Verifica se `user.name` e `user.email` estão configurados; se não, informa o usuário e não commita até a configuração. (2) Garante que não há arquivos sensíveis no stage. (3) Faz commit(s) com Conventional Commits, **sempre faz push** da branch em seguida e indica o link para abrir o PR.
+- **Objetivo:** Não esquecer credenciais, não esquecer push após commit e manter commits/PRs consistentes com o fluxo do projeto.
 
 ---
 
